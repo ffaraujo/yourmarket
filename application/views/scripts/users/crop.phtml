@@ -1,0 +1,164 @@
+<?php
+$this->headScript()->appendFile($this->baseUrl() . '/scripts/jquery/jcrop/js/jquery.Jcrop.min.js');
+$this->headLink()->appendStylesheet($this->baseUrl() . '/scripts/jquery/jcrop/css/jquery.Jcrop.min.css');
+?>
+<script type="text/javascript">
+    jQuery(function($) {
+        // Create variables (in this scope) to hold the API and image size
+        var jcrop_api,
+                boundx,
+                boundy,
+                // Grab some information about the preview pane
+                //$preview = $('#preview-pane'),
+                $pcnt = $('#preview-pane .preview-container'),
+                $pimg = $('#preview-pane .preview-container img'),
+                xsize = $pcnt.width(),
+                ysize = $pcnt.height();
+
+        console.log('init', [xsize, ysize]);
+        $('#target').Jcrop({
+            onChange: updatePreview,
+            onSelect: updatePreview,
+            aspectRatio: xsize / ysize,
+            setSelect: [0, 0, xsize, ysize],
+            minSize: [xsize, ysize],
+            allowSelect: false,
+            onRelease: clearCoords
+        }, function() {
+            // Use the API to get the real image size
+            var bounds = this.getBounds();
+            boundx = bounds[0];
+            boundy = bounds[1];
+            // Store the API in the jcrop_api variable
+            jcrop_api = this;
+
+            // Move the preview into the jcrop container for css positioning
+            //$preview.appendTo(jcrop_api.ui.holder);
+        });
+
+        function updatePreview(c)
+        {
+            if (parseInt(c.w) > 0)
+            {
+                var rx = xsize / c.w;
+                var ry = ysize / c.h;
+
+                $pimg.css({
+                    width: Math.round(rx * boundx) + 'px',
+                    height: Math.round(ry * boundy) + 'px',
+                    marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                    marginTop: '-' + Math.round(ry * c.y) + 'px'
+                });
+            }
+
+            showCoords(c);
+        }
+        ;
+
+        $('#coords').on('change', 'input', function(e) {
+            var x1 = $('#x1').val(),
+                    x2 = $('#x2').val(),
+                    y1 = $('#y1').val(),
+                    y2 = $('#y2').val();
+            jcrop_api.setSelect([x1, y1, x2, y2]);
+        });
+
+    });
+
+    // Simple event handler, called from onChange and onSelect
+    // event handlers, as per the Jcrop invocation above
+    function showCoords(c)
+    {
+        $('#x1').val(c.x);
+        $('#y1').val(c.y);
+        $('#x2').val(c.x2);
+        $('#y2').val(c.y2);
+        $('#w').val(c.w);
+        $('#h').val(c.h);
+    }
+    ;
+
+    function clearCoords()
+    {
+        $('#coords input').val('');
+    }
+    ;
+    
+    function toggleCropPanel() {
+        if($('.crop-info').is(':visible')) {
+            $('.crop-info').fadeToggle('medium', 'swing', function(){
+                $('.crop-panel').fadeToggle('medium', 'swing', function(){});
+            });
+        } else {
+            $('.crop-panel').fadeToggle('medium', 'swing', function(){
+                $('.crop-info').fadeToggle('medium', 'swing', function(){});
+            });
+        }
+    }
+</script>
+<style type="text/css">
+
+    /* Apply these styles only when #preview-pane has
+       been placed within the Jcrop widget */
+    .jcrop-holder #preview-pane {
+        display: block;
+        //position: absolute;
+        z-index: 2000;
+        //top: 0;
+        //right: -170px;
+        padding: 6px;
+        border: 1px rgba(0,0,0,.4) solid;
+        background-color: white;
+
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+
+        -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+        box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+    }
+
+    /* The Javascript code will set the aspect ratio of the crop
+       area based on the size of the thumbnail preview,
+       specified here */
+    #preview-pane .preview-container {
+        <?php if (!empty($this->size['w'])): ?>width: <?php echo $this->size['w']; ?>px;<?php endif; ?>
+        <?php if (!empty($this->size['h'])): ?>height: <?php echo $this->size['h']; ?>px;<?php endif; ?>
+        overflow: hidden;
+    }
+    form.coords {text-align: right; width: 800px;}
+</style>
+<div class="crop-info">
+    <h2 style="margin-bottom: 5px;">Pré-visualização:</h2>
+    <br class="clear" />
+    <img style="margin-bottom: 10px;" src="<?php echo $this->baseUrl(); ?>/upload/users/<?php echo $this->size['w'].'_'.$this->size['h'].'/'.$this->image; ?>" alt="Preview" />
+    <br class="clear" />
+    <a href="<?php echo $this->url(array('controller' => 'users'), 'default', true); ?>" class="button">Finalizar</a> <a href="#" onclick="toggleCropPanel(); return false;" class="button">Recortar</a>
+</div>
+<div class="crop-panel" style="display: none;">
+    <div class="inner-panel" style="margin-bottom: 10px;">
+        <div style="margin-bottom: 10px;"><img src="<?php echo $this->baseUrl(); ?>/upload/users/<?php echo $this->image; ?>" id="target" alt="target" /></div>
+        <br class="clear" />
+        <div style="width: 50%; margin: 0 auto;">
+            <h2 style="margin-bottom: 5px;">Pré-visualização:</h2>
+            <div id="preview-pane">
+                <div class="preview-container">
+                    <img src="<?php echo $this->baseUrl(); ?>/upload/users/<?php echo $this->image; ?>" class="jcrop-preview" alt="Preview" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <br class="clear" />
+    <!-- This is the form that our event handler fills -->
+    <form id="coords" class="coords" method="post" action="">
+        <input type="hidden" size="4" id="x1" name="x1" />
+        <input type="hidden" size="4" id="y1" name="y1" />
+        <input type="hidden" size="4" id="x2" name="x2" />
+        <input type="hidden" size="4" id="y2" name="y2" />
+        <input type="hidden" size="4" id="w" name="w" />
+        <input type="hidden" size="4" id="h" name="h" />
+        <input type="submit" name="OK" value="OK" />
+        <input type="button" name="cancel" value="Cancelar" onclick="toggleCropPanel();" />
+    </form>
+</div>

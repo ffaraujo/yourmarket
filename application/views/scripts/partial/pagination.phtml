@@ -1,0 +1,31 @@
+<?php if ($this->pageCount > 1): ?>
+    <!--Paginacao-->
+    <ul id="pagination" class="pagination">
+
+        <?php if($this->current != $this->first): ?>
+            <li class="prev"><a href="<?= $this->url(array('pag' => $this->first)); ?>" title="Primeira" class="botoes bt_anterior">Primeira</a></li>
+        <?php endif; ?>
+        
+        <?php if (isset($this->previous)): ?> 
+            <li class="prev"><a href="<?= $this->url(array('pag' => $this->previous)); ?>" title="Anterior" class="botoes bt_anterior">Anterior</a></li>
+        <?php endif; ?> 
+
+
+        <?php foreach ($this->pagesInRange as $page): ?>
+            <?php if ($this->current != $page): ?> 
+                <li><a href="<?php echo $this->url(array('pag' => $page)); ?>" title="Página <? echo $page ?>"><? echo $page ?></a></li>
+            <?php else: ?>
+                <li class="selected"><a href=""><? echo $page ?></a></li>
+            <?php endif; ?> 
+        <?php endforeach; ?>
+
+        <?php if (isset($this->next)): ?> 
+            <li class="next"><a href="<?= $this->url(array('pag' => $this->next)); ?>" title="Próxima" class="botoes bo_anterior">Próxima</a></li>
+        <?php endif; ?> 
+            
+        <?php if ($this->current != $this->last): ?> 
+            <li class="next"><a href="<?= $this->url(array('pag' => $this->last)); ?>" title="Última" class="botoes bo_anterior">Última</a></li>
+        <?php endif; ?> 
+    </ul>
+    <!--/Paginacao-->
+<?php endif; ?>

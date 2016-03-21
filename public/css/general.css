@@ -1,0 +1,135 @@
+/*
+ * Cascade Style Sheet
+ * Created on : 11/07/2014
+ * @author Fabio Feliciano
+ * Description: Purpose of the stylesheet follows.
+ */
+
+/* ---- BOXES ---- */
+div.box.top {background-color: #567AB9; height: 90px; margin-bottom: 10px;}
+div.box.content {min-height: 400px; margin-bottom: 10px;}
+div.box.bottom {background-color: silver; height: 40px; margin-bottom: 10px;}
+.auth {
+    display: inline-table;
+    margin-top: 50px;
+    text-align: center;
+    width: 25%;
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #A8A8A8;
+    color: #4F4F4F;
+    padding: 10px 30px 0;
+}
+.breadcrumbs {margin-bottom: 20px;}
+
+/* ---- FORMS ---- */
+form.form-logon label {display: block; text-align: left;}
+form.form-logon input {margin-bottom: 10px;}
+
+form.form-back {}
+form.form-back label {display: block;}
+form.form-back input, form.form-back textarea, form.form-back select,
+form.form-back button {margin-bottom: 15px; width: 200px;}
+form.form-back button {width: 155px;}
+form.form-back textarea {width: 415px; display: block;}
+form.form-back input[type=file] {width: 330px;}
+form.form-back .hint {color: #AAA; font: 10px Verdana; display: block; margin-top: -10px;}
+
+
+/* ---- BUTTONS ---- */
+.button {background-color: #ccc; display: inline-block; min-width: 80px; text-align: center; border: 1px outset black; color: black; font-weight: bold;}
+a.button {text-decoration: none;}
+a.button:hover {text-decoration: underline;}
+.ok-button {width: 80px!important; display: block!important;}
+
+/* ---- MSGS ---- */
+#system-message {position: fixed; margin-top: 0; min-height: 55px; display: block; z-index: 20; border: 1px outset #F00;}
+.red-msg {background-color: #FF8C8C;}
+.green-msg {background-color: #99D59E;}
+.gray-msg {background-color: #CCC;}
+ul.errors {color: red;}
+
+/* ---- LISTS ---- */
+ul {list-style: none;}
+ul.pagination {list-style: none;}
+ul.pagination li {
+    display: inline-block;
+    font: 12px Verdana;
+    margin: 0;
+    margin-right: 5px;
+    background-color: #99BBFF;
+    border: 1px solid black;
+    text-align: center;
+}
+ul.pagination li a {display: block; min-width: 30px; padding: 4px; color: black;}
+
+/* ---- TITLES ---- */
+.title {}
+
+/* ---- TABLES ---- */
+table {}
+
+table.back-table {width: 100%;}
+table.back-table thead td {
+    background-color: #99BBFF;
+    border: 1px solid gray;
+    text-align: center;
+    color: black;
+    font-weight: bold;
+    padding: 4px;
+}
+table.back-table tbody td {
+    color: black;
+    padding: 2px;
+    text-align: center;
+    border: 1px solid gray;
+    vertical-align: middle;
+}
+
+/* ---- MENUS ---- */
+ul.menu {
+    list-style: none;
+}
+ul.menu li {
+    display: block;
+    border: 1px outset gray;
+    background-color: #B9B9B9;
+    height: 30px;
+    padding-left: 20px;
+    font: 12px Verdana;
+    margin: 0;
+}
+ul.menu li.menu-title {
+    background-color: #E0E0E0;
+    text-align: center;
+    padding: 0;
+    font: bold 16px Arial;
+    margin-top: 10px;
+    text-shadow: 2px 1px #AAAAAA;
+}
+span.menu-item {
+    vertical-align: middle;
+    height: 100%;
+}
+span.menu-item a {
+    display: block;
+    color: black;
+    height: 100%;
+    text-decoration: none;
+}
+span.menu-item a:hover {
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+/* ---- IMGS ---- */
+
+
+/* ---- TEXTS ---- */
+p.log {font: 12px "Courier New";}
+
+/* ---- OTHERS ---- */
+.left {text-align: left;}
+.center {text-align: center;}
+.right {text-align: right;}
+.order-link {color: black;}
+a.sutil {color: #AAA; font: 10px Verdana;}

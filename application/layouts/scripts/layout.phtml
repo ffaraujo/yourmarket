@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <?php
+        $this->headTitle('Projeto Base');
+        $this->headTitle()->setSeparator(' - ');
+
+        $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl() . '/favicon.ico', 'type' => 'image/x-icon'), 'PREPEND');
+        $this->headLink()->headLink(array('rel' => 'shortcut icon', 'href' => $this->baseUrl() . '/favicon.ico', 'type' => 'image/x-icon'), 'PREPEND');
+
+        $this->headScript()->prependFile($this->baseUrl().'/scripts/jquery/jquery-1.11.1.min.js');
+
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/reset.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/text.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/960_12_col.css');
+        $this->headLink()->appendStylesheet($this->baseUrl() . '/css/general.css');
+
+        echo $this->headTitle();
+        echo $this->headMeta();
+        echo $this->headScript();
+        echo $this->headStyle();
+        echo $this->headLink();
+        ?>
+    </head>
+    <body>
+        <br class="clear" />
+        <div class="box top container_12">
+            <?php echo $this->DisplayError($this->messages); ?>
+            &nbsp;
+            <br class="clear" />
+        </div>
+        <br class="clear" />
+        <div class="box content container_12">
+            <?php echo $this->layout()->content; ?>
+        </div>
+        <br class="clear" />
+        <div class="box bottom container_12">
+            &nbsp;
+            <br class="clear" />
+        </div>
+        <br class="clear" />
+    </body>
+</html>

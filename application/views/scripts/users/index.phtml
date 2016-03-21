@@ -1,0 +1,31 @@
+<h2 class="title">Usuários (Listar)</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'insert'), 'default', true); ?>" class="button" style="float: right; margin-bottom: 10px;">Adicionar</a>
+<br class="clear" />
+<table class="back-table">
+    <thead>
+        <tr>
+            <?php if($this->d_order == 'asc') $d_order = 'desc'; else $d_order = 'asc'; ?>
+            <td style="width: 40px;"><a class="order-link" href="<?php echo $this->url(array('order' => 'id', 'd' => $d_order), 'default', false); ?>">ID</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'name', 'd' => $d_order), 'default', false); ?>">Nome</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'email', 'd' => $d_order), 'default', false); ?>">Email</a></td>
+            <td style="width: 255px;">Ações</td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->users as $user): ?>
+        <tr>
+            <td><?php echo $user->getId(); ?></td>
+            <td><?php echo $user->getName(); ?></td>
+            <td><?php echo $user->getEmail(); ?></td>
+            <td>
+                <a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'activate', 'id' => $user->getId()), 'default', true); ?>" class="button"><?php echo ($user->getActive() == 0) ? 'Ativar' : 'Inativar'; ?></a>
+                <a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'insert', 'id' => $user->getId()), 'default', true); ?>" class="button">Editar</a>
+                <a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'delete', 'id' => $user->getId()), 'default', true); ?>" class="button" onclick="return confirm('Deseja excluir este registro?');">Excluir</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

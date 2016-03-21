@@ -1,0 +1,6 @@
+baseproject-npp
+Base project to start another projects with some improvements.
+
+This project will be the base to start another projects without need of re-create everytime: Logon, ACL, Auditorship and other engines. 
+
+Zend, PHP, GeneralPurpose, Open

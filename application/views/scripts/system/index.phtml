@@ -1,0 +1,11 @@
+<h2 class="title">Configurações</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<?php echo $this->form; ?>
+<br class="clear" />
+<?php 
+if ($this->logged) $access = new Access($this->user); else $access = false;
+if($access->isAllowed('access', 'U') && $access->isAllowed('auditorship', 'R')): ?>
+<a class="sutil" href="<?php echo $this->url(array('controller' => 'access'), 'default', true); ?>">Access List</a>, <a class="sutil" href="<?php echo $this->url(array('controller' => 'auditorship'), 'default', true); ?>">Auditoria</a>
+<?php endif; ?>

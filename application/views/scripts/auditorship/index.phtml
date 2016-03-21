@@ -1,0 +1,35 @@
+<?php $uMapper = new Application_Model_UserMapper(); ?>
+<h2 class="title">Auditoria</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<?php if($this->aud_config == 'db'): ?>
+<table class="back-table">
+    <thead>
+        <tr>
+            <?php if($this->d_order == 'asc') $d_order = 'desc'; else $d_order = 'asc'; ?>
+            <td style="width: 40px;"><a class="order-link" href="<?php echo $this->url(array('order' => 'id', 'd' => $d_order), 'default', false); ?>">ID</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'user', 'd' => $d_order), 'default', false); ?>">Usuário</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'action', 'd' => $d_order), 'default', false); ?>">Ação</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'controller', 'd' => $d_order), 'default', false); ?>">Controlador</a></td>
+            <td>Objeto</td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'date', 'd' => $d_order), 'default', false); ?>">Data</a></td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->log as $reg): ?>
+            <tr>
+                <td><?php echo $reg->getId(); ?></td>
+                <td><?php $u = $uMapper->find($reg->getUser()); echo $u->getName(); ?></td>
+                <td><?php echo $reg->getAction(); ?></td>
+                <td><?php echo $reg->getController(); ?></td>
+                <td><?php echo $reg->getObjectId(); ?></td>
+                <td><?php echo $reg->getInsertDate(); ?></td>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>
+<?php echo $this->paginationControl($this->log, 'Elastic', 'partial/pagination.phtml'); ?>
+<?php else: ?>
+<p class="log"><?php echo $this->log; ?></p>
+<?php endif; ?>

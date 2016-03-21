@@ -1,0 +1,50 @@
+<?php $role = false; $resource = false; ?>
+<h2 class="title">Lista de Acesso</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<table class="back-table">
+    <thead>
+        <tr>
+            <td>Perfil</td>
+            <td>Recurso</td>
+            <td>Privilégio</td>
+            <td>Ação</td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach ($this->results as $result): ?>
+        <?php foreach ($result['rows'] as $row): ?>
+        <tr>
+            <?php if(!$role): ?>
+            <td rowspan="<?php echo $this->total; ?>">
+                <select id="role">
+                    <?php foreach($this->roles as $role): ?>
+                    <option value="<?php echo $role['rol_id']; ?>"<?php if($this->role == $role['rol_id']) echo " selected='selected'" ?>><?php echo $role['rol_desc']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </td>
+            <?php $role = true; endif; ?>
+            <?php if($row['acc_resource'] != $resource): ?><td rowspan="<?php echo $result['qty']; ?>"><?php echo $row['res_desc']; ?></td><?php $resource = $row['acc_resource']; endif; ?>
+            <td><?php echo $row['pri_desc']; ?></td>
+            <td>
+                <?php if($row['acc_allow'] == 0) $text = 'Permitir'; else $text = 'Proibir'; ?>
+                <a href="<?php echo $this->url(array('controller' => 'access', 'action' => 'change-access', 'role' => $row['acc_role'], 'privilege' => $row['acc_privilege'], 'resource' => $row['acc_resource']), 'default', true); ?>" class="button"><?php echo $text; ?></a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+        <?php endforeach; ?>
+        <?php if ($this->total == 0): ?>
+        <tr>
+            <td colspan="4">Nenhuma permissão cadastrada.</td>
+        </tr>
+        <?php endif; ?>
+    </tbody>
+</table>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('select#role').change(function(){
+            window.location= '<?php echo $this->baseUrl(); ?>/access/index/role/' + $(this).val();
+        });
+    });
+</script>
