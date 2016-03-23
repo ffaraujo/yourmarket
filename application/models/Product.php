@@ -18,6 +18,10 @@ class Application_Model_Product {
         }
     }
 
+    function toArray() {
+        return get_object_vars($this);
+    }
+
     public function getId() {
         return $this->prd_id;
     }

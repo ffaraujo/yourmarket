@@ -22,7 +22,19 @@ class ProductController extends GeneralController {
     }
 
     public function indexAction() {
-        // action body
+        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'R')) {
+            $this->addFlashMessage(array('Permissão Negada.', ERROR), '/');
+        }
+
+        $productsMapper = new Application_Model_ProductMapper();
+        $select = NULL;
+        if ($this->_hasParam('order')) {
+            $order = $this->defineListOrder();
+        } else {
+            $order = Application_Model_Product::PREFIX . 'name ASC';
+        }
+        $this->view->d_order = $this->_getParam('d', 'asc');
+        $this->view->products = $productsMapper->fetchAll(false, $select, $order);
     }
 
     public function insertAction() {
@@ -72,6 +84,70 @@ class ProductController extends GeneralController {
         }
 
         $this->view->form = $form;
+    }
+
+    public function activateAction() {
+        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'A')) {
+            $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
+        }
+
+        $mapper = new Application_Model_ProductMapper();
+
+        if ($this->_hasParam('id')) {
+            $row = $mapper->find($this->_getParam('id'));
+            if (!empty($row)) {
+                if ($row->getId() != 1) {
+                    $status = ($row->getActive()) ? 0 : 1;
+                    $row->setActive($status);
+                    $mapper->save($row);
+                }
+            }
+        }
+        $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $row->getId());
+        $this->addFlashMessage(array('Alterado com sucesso', SUCCESS), $this->_iniUrl);
+    }
+
+    public function deleteAction() {
+        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'D')) {
+            $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
+        }
+
+        $mapper = new Application_Model_ProductMapper();
+
+        if ($this->_hasParam('id')) {
+            $row = $mapper->find($this->_getParam('id'));
+            if (!empty($row)) {
+                $mapper->delete($row->getId());
+            }
+        }
+        $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $row->getId());
+        $this->addFlashMessage(array('Registro excluído com sucesso.', SUCCESS), $this->_iniUrl);
+    }
+
+    private function defineListOrder() {
+        switch ($this->_getParam('order')) {
+            case 'id':
+                $order = Application_Model_Product::PREFIX . 'id ';
+                break;
+            case 'name':
+            default:
+                $order = Application_Model_Product::PREFIX . 'name ';
+                break;
+        }
+        if ($this->_hasParam('d')) {
+            switch ($this->_getParam('d')) {
+                case 'desc':
+                    $order .= 'DESC';
+                    break;
+                case 'asc':
+                default:
+                    $order .= 'ASC';
+                    break;
+            }
+        } else {
+            $order .= 'ASC';
+        }
+        return $order;
     }
 
 }
