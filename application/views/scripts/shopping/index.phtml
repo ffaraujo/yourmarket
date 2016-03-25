@@ -1,0 +1,30 @@
+<h2 class="title">Feiras (Listar)</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<a href="<?php echo $this->url(array('controller' => 'shopping', 'action' => 'insert'), 'default', true); ?>" class="button" style="float: right; margin-bottom: 10px;">Adicionar</a>
+<br class="clear" />
+<table class="back-table">
+    <thead>
+        <tr>
+            <?php if($this->d_order == 'asc') $d_order = 'desc'; else $d_order = 'asc'; ?>
+            <td style="width: 40px;"><a class="order-link" href="<?php echo $this->url(array('order' => 'id', 'd' => $d_order), 'default', false); ?>">ID</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'date', 'd' => $d_order), 'default', false); ?>">Data</a></td>
+            <td><a class="order-link" href="<?php echo $this->url(array('order' => 'value', 'd' => $d_order), 'default', false); ?>">Valor</a></td>
+            <td style="width: 255px;">Ações</td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->products as $product): ?>
+        <tr>
+            <td><?php echo $product->getId(); ?></td>
+            <td><?php echo $product->getName(); ?></td>
+            <td>
+                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'activate', 'id' => $product->getId()), 'default', true); ?>" class="button"><?php echo ($product->getActive() == 0) ? 'Ativar' : 'Inativar'; ?></a>
+                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'insert', 'id' => $product->getId()), 'default', true); ?>" class="button">Editar</a>
+                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'delete', 'id' => $product->getId()), 'default', true); ?>" class="button" onclick="return confirm('Deseja excluir este registro?');">Excluir</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

@@ -40,12 +40,19 @@
           <actionMethod actionName="index"/>
           <actionMethod actionName="insert"/>
         </controllerFile>
+        <controllerFile controllerName="Shopping">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="insert"/>
+          <actionMethod actionName="activate"/>
+          <actionMethod actionName="delete"/>
+        </controllerFile>
       </controllersDirectory>
       <formsDirectory>
         <formFile formName="Logon"/>
         <formFile formName="User"/>
         <formFile formName="System"/>
         <formFile formName="Product"/>
+        <formFile formName="Shopping"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>
@@ -58,6 +65,7 @@
           <dbTableFile dbTableName="System"/>
           <dbTableFile dbTableName="Auditorship"/>
           <dbTableFile dbTableName="Product"/>
+          <dbTableFile dbTableName="Shopping"/>
         </dbTableDirectory>
         <modelFile modelName="User"/>
         <modelFile modelName="UserMapper"/>
@@ -67,6 +75,8 @@
         <modelFile modelName="AuditorLogMapper"/>
         <modelFile modelName="Product"/>
         <modelFile modelName="ProductMapper"/>
+        <modelFile modelName="Shopping"/>
+        <modelFile modelName="ShoppingMapper"/>
       </modelsDirectory>
       <modulesDirectory enabled="false"/>
       <servicesDirectory enabled="false"/>
@@ -128,6 +138,18 @@
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Product">
             <viewScriptFile forActionName="insert"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shopping">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shopping">
+            <viewScriptFile forActionName="insert"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shopping">
+            <viewScriptFile forActionName="activate"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="Shopping">
+            <viewScriptFile forActionName="delete"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>
         <viewHelpersDirectory/>

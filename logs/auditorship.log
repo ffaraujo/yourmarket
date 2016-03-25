@@ -8,3 +8,4 @@
 2016-03-23 11:50:18 DEBUG (7): u:1;a:activate;l:product;o:3;
 2016-03-23 11:50:41 DEBUG (7): u:1;a:activate;l:product;o:3;
 2016-03-23 11:50:58 DEBUG (7): u:1;a:delete;l:product;o:3;
+2016-03-25 11:07:52 DEBUG (7): u:1;a:insert;l:product;o:1;

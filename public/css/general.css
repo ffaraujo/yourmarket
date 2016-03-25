@@ -121,6 +121,10 @@ span.menu-item a:hover {
     font-weight: bold;
 }
 
+div.menu-pr {border: 1px solid silver; margin-bottom: 10px;}
+div.menu-pr ul {list-style: disc; margin: 4px 0;}
+div.menu-pr ul li {display: inline-block; margin-left: 14px;}
+
 /* ---- IMGS ---- */
 
 
