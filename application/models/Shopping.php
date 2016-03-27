@@ -30,9 +30,19 @@ class Application_Model_Shopping {
     public function getDate() {
         return $this->shp_date;
     }
+    
+    public function getLegDate() {
+        $fdate = new Zend_Date($this->shp_date,'yyyy-MM-dd');
+        return $fdate->get('dd/MM/yyyy');
+    }
 
     public function getValue() {
         return $this->shp_value;
+    }
+    
+    public function getLegValue() {
+        $fdate = new Zend_Date($this->shp_date,'yyyy-MM-dd');
+        return $fdate->get('dd/MM/yyyy');
     }
 
     public function getCreateDate() {
@@ -69,6 +79,16 @@ class Application_Model_Shopping {
 
     public function setActive($shp_active) {
         $this->shp_active = $shp_active;
+    }
+    
+    public function setDbDate() {
+        $fdate = new Zend_Date($this->shp_date,'dd/MM/yyyy');
+        $this->shp_date = $fdate->get('yyyy-MM-dd');
+    }
+    
+    public function setFormDate() {
+        $fdate = new Zend_Date($this->shp_date,'yyyy-MM-dd');
+        $this->shp_date = $fdate->get('dd/MM/yyyy');
     }
 
 }

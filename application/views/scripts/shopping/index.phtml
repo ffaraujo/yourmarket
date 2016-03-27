@@ -11,18 +11,22 @@
             <td style="width: 40px;"><a class="order-link" href="<?php echo $this->url(array('order' => 'id', 'd' => $d_order), 'default', false); ?>">ID</a></td>
             <td><a class="order-link" href="<?php echo $this->url(array('order' => 'date', 'd' => $d_order), 'default', false); ?>">Data</a></td>
             <td><a class="order-link" href="<?php echo $this->url(array('order' => 'value', 'd' => $d_order), 'default', false); ?>">Valor</a></td>
-            <td style="width: 255px;">Ações</td>
+            <td>Qtde de Itens</td>
+            <td style="width: 340px;">Ações</td>
         </tr>
     </thead>
     <tbody>
-        <?php foreach($this->products as $product): ?>
+        <?php foreach($this->shopping as $shopping): ?>
         <tr>
-            <td><?php echo $product->getId(); ?></td>
-            <td><?php echo $product->getName(); ?></td>
+            <td><?php echo $shopping->getId(); ?></td>
+            <td><?php echo $shopping->getLegDate(); ?></td>
+            <td><?php echo number_format($shopping->getValue(), 2, ',', '.'); ?></td>
+            <td><?php echo $this->mapper->getNumberOfItens($shopping->getId()); ?></td>
             <td>
-                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'activate', 'id' => $product->getId()), 'default', true); ?>" class="button"><?php echo ($product->getActive() == 0) ? 'Ativar' : 'Inativar'; ?></a>
-                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'insert', 'id' => $product->getId()), 'default', true); ?>" class="button">Editar</a>
-                <a href="<?php echo $this->url(array('controller' => 'product', 'action' => 'delete', 'id' => $product->getId()), 'default', true); ?>" class="button" onclick="return confirm('Deseja excluir este registro?');">Excluir</a>
+                <a href="<?php echo $this->url(array('controller' => 'shopping', 'action' => 'activate', 'id' => $shopping->getId()), 'default', true); ?>" class="button"><?php echo ($shopping->getActive() == 0) ? 'Ativar' : 'Inativar'; ?></a>
+                <a href="<?php echo $this->url(array('controller' => 'shopping', 'action' => 'insert', 'id' => $shopping->getId()), 'default', true); ?>" class="button">Editar</a>
+                <a href="<?php echo $this->url(array('controller' => 'shopping', 'action' => 'delete', 'id' => $shopping->getId()), 'default', true); ?>" class="button" onclick="return confirm('Deseja excluir este registro?');">Excluir</a>
+                <a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'index', 'shopping' => $shopping->getId()), 'default', true); ?>" class="button">Gerenciar</a>
             </td>
         </tr>
         <?php endforeach; ?>

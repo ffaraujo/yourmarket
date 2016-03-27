@@ -46,6 +46,12 @@
           <actionMethod actionName="activate"/>
           <actionMethod actionName="delete"/>
         </controllerFile>
+        <controllerFile controllerName="ShoppingItens">
+          <actionMethod actionName="index"/>
+          <actionMethod actionName="insert"/>
+          <actionMethod actionName="activate"/>
+          <actionMethod actionName="delete"/>
+        </controllerFile>
       </controllersDirectory>
       <formsDirectory>
         <formFile formName="Logon"/>
@@ -149,6 +155,18 @@
             <viewScriptFile forActionName="activate"/>
           </viewControllerScriptsDirectory>
           <viewControllerScriptsDirectory forControllerName="Shopping">
+            <viewScriptFile forActionName="delete"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="ShoppingItens">
+            <viewScriptFile forActionName="index"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="ShoppingItens">
+            <viewScriptFile forActionName="insert"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="ShoppingItens">
+            <viewScriptFile forActionName="activate"/>
+          </viewControllerScriptsDirectory>
+          <viewControllerScriptsDirectory forControllerName="ShoppingItens">
             <viewScriptFile forActionName="delete"/>
           </viewControllerScriptsDirectory>
         </viewScriptsDirectory>

@@ -43,12 +43,7 @@
             </div>
         </div>
         <br class="clear" />
-        <div class="box menu-pr container_12">
-            <ul>
-                <li>&bull; <a href="<?php echo $this->url(array('controller' => 'product'), 'default', true); ?>">Produtos</a></li>
-                <li>&bull; <a href="<?php echo $this->url(array('controller' => 'shopping'), 'default', true); ?>">Feiras</a></li>
-            </ul>
-        </div>
+        <?php echo $this->render('partial/breadcrumbs.phtml'); ?>
         <br class="clear" />
         <div class="box content container_12">
             <div class="grid_3">

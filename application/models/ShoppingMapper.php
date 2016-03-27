@@ -242,4 +242,16 @@ class Application_Model_ShoppingMapper {
         return self::$_imgSizes;
     }
 
+    public function getNumberOfItens($shId) {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = $db->select()
+                ->from('products_has_shopping', array('phs_shopping_id', "SUM(phs_quantity) as qtd"))
+                ->where('phs_shopping_id = ?', $shId);
+        $resources = $db->fetchRow($select);
+        if (!empty($resources['qtd']))
+            return $resources['qtd'];
+        else
+            return 0;
+    }
+
 }

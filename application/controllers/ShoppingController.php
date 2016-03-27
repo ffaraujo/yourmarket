@@ -31,10 +31,11 @@ class ShoppingController extends GeneralController {
         if ($this->_hasParam('order')) {
             $order = $this->defineListOrder();
         } else {
-            $order = Application_Model_Shopping::PREFIX . 'date ASC';
+            $order = Application_Model_Shopping::PREFIX . 'date DESC';
         }
         $this->view->d_order = $this->_getParam('d', 'asc');
-        $this->view->products = $shoppingMapper->fetchAll(false, $select, $order);
+        $this->view->shopping = $shoppingMapper->fetchAll(false, $select, $order);
+        $this->view->mapper = $shoppingMapper;
     }
 
     public function insertAction() {
@@ -56,6 +57,7 @@ class ShoppingController extends GeneralController {
             /* @var $db_object Application_Model_Shopping */
             $db_object = $mapper->find($this->_getParam('id'));
             if (!empty($db_object)) {
+                $db_object->setFormDate();
                 $form = new Application_Form_Shopping(NULL, true, $db_object->getId());
                 $form->populate($db_object->toArray());
             }
@@ -76,6 +78,7 @@ class ShoppingController extends GeneralController {
                     $shopping->setActive($db_object->getActive());
                 }
 
+                $shopping->setDbDate();
                 $result_id = $mapper->save($shopping);
 
                 $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $result_id);

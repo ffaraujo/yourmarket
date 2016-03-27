@@ -9,3 +9,9 @@
 2016-03-23 11:50:41 DEBUG (7): u:1;a:activate;l:product;o:3;
 2016-03-23 11:50:58 DEBUG (7): u:1;a:delete;l:product;o:3;
 2016-03-25 11:07:52 DEBUG (7): u:1;a:insert;l:product;o:1;
+2016-03-27 11:54:30 DEBUG (7): u:1;a:insert;l:shopping;o:1;
+2016-03-27 12:07:44 DEBUG (7): u:1;a:insert;l:shopping;o:1;
+2016-03-27 12:21:20 DEBUG (7): u:1;a:insert;l:shopping;o:1;
+2016-03-27 12:22:18 DEBUG (7): u:1;a:insert;l:shopping;o:2;
+2016-03-27 12:23:03 DEBUG (7): u:1;a:insert;l:shopping;o:3;
+2016-03-27 13:12:34 DEBUG (7): u:1;a:insert;l:product;o:2;
