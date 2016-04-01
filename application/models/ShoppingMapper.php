@@ -149,6 +149,26 @@ class Application_Model_ShoppingMapper {
     }
 
     /**
+     * Get data in DB and converts to a set of objects
+     * 
+     * @param Int $shId shopping Id to search
+     * @param String|Array $order define order to get data
+     * @return Array
+     */
+    public function fetchAllItens($shId = 0) {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = $db->select()
+                ->from('products_has_shopping')
+                ->join('products', 'prd_id = phs_product_id')
+                ->where('phs_shopping_id = ?', $shId);
+
+        $select->order('prd_name ASC');
+        $resultSet = $db->fetchAll($select);
+
+        return $resultSet;
+    }
+
+    /**
      * Get data in DB and converts to a set of objects with pagination
      * 
      * @param Int $itemPerPage define how many items by page
@@ -185,6 +205,20 @@ class Application_Model_ShoppingMapper {
             } else {
                 $this->getDbTable()->update(array($this->prefix . 'active' => -1), $this->prefix . 'id = ' . $id);
             }
+        }
+    }
+
+    /**
+     * Delete a register by ID
+     * 
+     * @param Int $sid Shopping ID
+     * @param Int $pid Product ID
+     * @return NULL
+     */
+    public function deleteItem($sid, $pid) {
+        if ((!empty($sid)) && (!empty($pid))) {
+            $db = Zend_Db_Table::getDefaultAdapter();
+            $db->delete('products_has_shopping', "phs_product_id = $pid AND phs_shopping_id = $sid");
         }
     }
 

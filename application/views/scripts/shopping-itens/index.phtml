@@ -1,4 +1,34 @@
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>ShoppingItens</b> and script/action name <b>index</b></p>
-</div>
+<?php $i = 1; ?>
+<h2 class="title">Itens [Feira](Listar)</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'insert'), 'default', true); ?>" class="button" style="float: right; margin-bottom: 10px;">Adicionar</a>
+<br class="clear" />
+<table class="back-table">
+    <thead>
+        <tr>
+            <td style="width: 40px;">#</td>
+            <td style="width: 520px">Item</td>
+            <td>Qtde.</td>
+            <td>Valor Un.</td>
+            <td>Valor Total</td>
+            <td style="width: 170px;">Ações</td>
+        </tr>
+    </thead>
+    <tbody>
+        <?php foreach($this->itens as $item): ?>
+        <tr>
+            <td><?php echo $i++; ?></td>
+            <td><?php echo $item['prd_name']; ?></td>
+            <td><?php echo $item['phs_quantity']; ?></td>
+            <td><?php echo number_format($item['phs_un_value'], 2, ',', '.'); ?></td>
+            <td><?php echo number_format($item['phs_to_value'], 2, ',', '.'); ?></td>
+            <td>
+                <a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'insert', 'product' => $item['phs_product_id'], 'shopping' => $item['phs_shopping_id']), 'default', true); ?>" class="button">Editar</a>
+                <a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'delete', 'product' => $item['phs_product_id'], 'shopping' => $item['phs_shopping_id']), 'default', true); ?>" class="button" onclick="return confirm('Deseja excluir este registro?');">Excluir</a>
+            </td>
+        </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

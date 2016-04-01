@@ -59,6 +59,7 @@
         <formFile formName="System"/>
         <formFile formName="Product"/>
         <formFile formName="Shopping"/>
+        <formFile formName="ShoppingItem"/>
       </formsDirectory>
       <layoutsDirectory>
         <layoutScriptsDirectory>

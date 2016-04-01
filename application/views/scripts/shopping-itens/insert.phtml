@@ -1,4 +1,23 @@
-<br /><br />
-<div id="view-content">
-	<p>View script for controller <b>ShoppingItens</b> and script/action name <b>insert</b></p>
-</div>
+<?php $this->headScript()->appendFile($this->baseUrl() . '/scripts/jquery/jquery-ui/jquery-ui.min.js'); ?>
+<?php $this->headLink()->appendStylesheet($this->baseUrl() . '/scripts/jquery/jquery-ui/jquery-ui.min.css'); ?>
+<style>
+    .ui-autocomplete-loading {
+        background: white url("images/ui-anim_basic_16x16.gif") right center no-repeat;
+    }
+</style>
+<script>
+  $(function() {
+    $( "#phs_product_id" ).autocomplete({
+      source: "<?php echo $this->url(array('controller' => 'index', 'action' => 'get-product'), 'default', true); ?>",
+      minLength: 2,
+      select: function( event, ui ) {
+        alert("Selected: " + ui.item.value + " aka " + ui.item.id);
+      }
+    });
+  });
+</script>
+<h2 class="title">Itens (Cadastrar)</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<?php echo $this->form; ?>

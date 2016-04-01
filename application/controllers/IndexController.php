@@ -44,5 +44,11 @@ class IndexController extends GeneralController {
         $this->_logon->doLogout();
         $this->_redirect('/logon');
     }
+    
+    public function getProductAction() {
+        $dados = array();
+        //header('Content-Type: application/json');
+        $this->view->json = json_encode($dados);
+    }
 
 }
