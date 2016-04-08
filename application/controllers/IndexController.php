@@ -23,7 +23,7 @@ class IndexController extends GeneralController {
                 $login = $this->_getParam(Application_Model_User::PREFIX . 'email');
                 $pass = $this->_getParam(Application_Model_User::PREFIX . 'password');
 
-                if (!$login or !$pass) {
+                if (!$login or ! $pass) {
                     $this->addFlashMessageDirect(array('Preencha os dados corretamente.', ERROR));
                 } else {
                     $result = $this->_logon->doLogin($login, $pass);
@@ -44,7 +44,7 @@ class IndexController extends GeneralController {
         $this->_logon->doLogout();
         $this->_redirect('/logon');
     }
-    
+
     public function getProductAction() {
         $dados = array();
         //header('Content-Type: application/json');
