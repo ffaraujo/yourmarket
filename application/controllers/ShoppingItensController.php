@@ -29,14 +29,19 @@ class ShoppingItensController extends GeneralController {
         if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'R')) {
             $this->addFlashMessage(array('Permissão Negada.', ERROR), '/');
         }
+        if(!$this->_hasParam('shopping')) {
+            $this->addFlashMessage(array('Informe uma feira.', ERROR), $this->_iniUrl);
+        }
 
         $shoppingMapper = new Application_Model_ShoppingMapper();
         $shId = $this->_getParam('shopping');
         $this->view->itens = $shoppingMapper->fetchAllItens($shId);
+        $this->view->sid = $shId;
     }
 
     public function insertAction() {
-        /*if ($this->_hasParam('id')) {
+        // @TODO DO AN EDIT FEATURE :/
+        if ($this->_hasParam('id')) {
             if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'U')) {
                 $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
             }
@@ -44,39 +49,21 @@ class ShoppingItensController extends GeneralController {
             if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'C')) {
                 $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
             }
-        }*/
+        }
+        if(!$this->_hasParam('shopping')) {
+            $this->addFlashMessage(array('Informe uma feira.', ERROR), $this->_iniUrl);
+        }
 
         $request = $this->getRequest();
         $form = new Application_Form_ShoppingItem();
         $mapper = new Application_Model_ShoppingMapper();
 
-        if ($this->_hasParam('id')) {
-            /* @var $db_object Application_Model_Shopping */
-            $db_object = $mapper->find($this->_getParam('id'));
-            if (!empty($db_object)) {
-                $db_object->setFormDate();
-                $form = new Application_Form_ShoppingItem(NULL, true, $db_object->getId());
-                $form->populate($db_object->toArray());
-            }
-        }
-
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
-                $date = Zend_Date::now();
-                $shopping = new Application_Model_Shopping($form->getValues());
-                $id = $shopping->getId();
-                if (empty($id)) {
-                    $shopping->setCreateDate($date->get('yyyy-MM-dd HH:mm:ss', 'pt_BR'));
-                    $shopping->setUser($this->_logon->getUser()->getId());
-                    $shopping->setActive(1);
-                } else {
-                    $shopping->setCreateDate($db_object->getCreateDate());
-                    $shopping->setUser($db_object->getUser());
-                    $shopping->setActive($db_object->getActive());
-                }
+                $values = $form->getValues();
+                $values['phs_shopping_id'] = $this->_getParam('shopping');
 
-                $shopping->setDbDate();
-                $result_id = $mapper->save($shopping);
+                $result_id = $mapper->saveItem($values);
 
                 $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $result_id);
                 $this->addFlashMessage(array('Dados cadastrados com sucesso.', SUCCESS), $this->_iniUrl);
@@ -99,5 +86,5 @@ class ShoppingItensController extends GeneralController {
         $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $this->_getParam('shopping') . '---' . $this->_getParam('product'));
         $this->addFlashMessage(array('Registro excluído com sucesso.', SUCCESS), $this->_iniUrl);
     }
-
+    
 }

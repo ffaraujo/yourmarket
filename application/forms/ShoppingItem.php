@@ -27,10 +27,10 @@ class Application_Form_ShoppingItem extends Zend_Form {
         $this->setMethod('post')->setEnctype('multipart/form-data')->setAttrib('class', 'form-back');
         $this->setTranslator(Zend_Registry::get('translate'));
 
-        $id = new Zend_Form_Element_Hidden($this->pre . 'shopping_id');
-        $id->setRequired(false)->removeDecorator('Label')->removeDecorator('HtmlTag');
+        /*$id = new Zend_Form_Element_Hidden($this->pre . 'shopping_id');
+        $id->setRequired(false)->removeDecorator('Label')->removeDecorator('HtmlTag');*/
 
-        $item = new Zend_Form_Element_Text($this->pre . 'product_id');
+        /*$item = new Zend_Form_Element_Text($this->pre . 'product_id');
         $item->addFilters(array('StripTags', 'StringTrim'))
                 ->addValidator('NotEmpty')
                 ->addValidator('StringLength', false, array(0, 80))
@@ -42,6 +42,18 @@ class Application_Form_ShoppingItem extends Zend_Form {
                     'maxlength' => '80',
                 ))
                 ->setLabel('Item:')
+                ->setRequired(true);*/
+        
+        $productMapper = new Application_Model_ProductMapper();
+        $productsRows = $productMapper->fetchAll(false, false, 'prd_name ASC');
+        $products = array();
+        foreach ($productsRows as $product) {
+            $products[$product->getId()] = $product->getName();
+        }
+        $item = new Zend_Form_Element_Select($this->pre . 'product_id', array('multiOptions' => $products));
+        $item->setLabel('Item:')
+                ->setAttrib('class', '')
+                ->setDecorators($this->elementDecorators)
                 ->setRequired(true);
         
         $qtde = new Zend_Form_Element_Text($this->pre . 'quantity');
@@ -92,7 +104,7 @@ class Application_Form_ShoppingItem extends Zend_Form {
                 ->setRequired(true)
                 ->removeDecorator('Label');
 
-        $this->addElements(array($id, $item, $qtde, $value, $total, $submit));
+        $this->addElements(array($item, $qtde, $value, $total, $submit));
     }
 
 }

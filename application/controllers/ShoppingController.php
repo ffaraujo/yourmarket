@@ -90,11 +90,95 @@ class ShoppingController extends GeneralController {
     }
 
     public function activateAction() {
+        // @TODO develop activate shopping feature
         // action body
     }
 
     public function deleteAction() {
+        // @TODO develop delete shopping feature
         // action body
+    }
+
+    public function populateAction() {
+        /* if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
+          $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
+          } */
+        try {
+            echo '<pre>';
+            $shoppingMapper = new Application_Model_ShoppingMapper();
+
+            $file = PATH_UPLOAD . 'cc-20160205.csv';
+            $now = date('d-m-Y H:i:s');
+            echo $file . ' [' . $now . ']<br /><hr /><br />';
+            echo '<table>
+                <tr align="center">
+                <td>NOME;</td><td>QTDE;</td><td>P. UNI;</td><td>P. TOTAL;</td>
+                </tr>';
+            $handle = fopen($file, 'r');
+
+            while (!feof($handle)) {
+                $buffer = fgets($handle, 8192);
+                $lines[] = explode(';', $buffer);
+            }
+            exit(var_dump($lines));
+            $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+            $db->beginTransaction();
+
+            $i = 0;
+            $k = 0;
+            $shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yyyy');
+            array_shift($lines);
+            $row = $shoppingMapper->fetchAll(false, "shp_date LIKE '" . $shoppingDate->get('yyyy-MM-dd') . "'");
+            if (empty($row[0])) {
+                $shopping = new Application_Model_Shopping();
+                $shopping->setDate($shoppingDate->get('yyyy-MM-dd'));
+                $shopping->setValue(0);
+                $shopping->setUser($this->_logon->getUser()->getId());
+                $shopping->setCreateDate($now);
+                $shopping->setActive(1);
+                $shoppingMapper->save($shopping);
+            } else {
+                $shopping = $row[0];
+            }
+
+            foreach ($lines as $line) {
+                if (empty($row[0])) {
+                    $row = new Application_Model_Product();
+                    $row->setName(trim($line[0]));
+                    $row->setCreateDate(date('Y-m-d H:i:s'));
+                    $row->setActive(1);
+                    $row->setUser(1);
+
+                    if ($i % 2)
+                        $cor = 'navy';
+                    else
+                        $cor = 'blue';
+                    echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
+                    $shoppingMapper->save($row);
+                    unset($row);
+                    $i++;
+                } else {
+                    echo '<tr align="center" style="color: brown; font-weight: bold;">
+                                    <td colspan="3">' . trim($line[0]) . '</td><td>Ja cadastrado</td>
+                                 </tr>';
+                    $k++;
+                }
+            }
+
+            echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
+            echo '<tr style="color:red; text-align:center; font-weight:bold;"><td colspan="4">' . $k . ' registros nao-cadastrados!</td></tr>';
+            echo '</table>';
+            $db->commit();
+            fclose($handle);
+            //var_dump($lines);
+            echo '</pre>';
+            exit('SUCESSO');
+        } catch (Exception $e) {
+            $db->rollBack();
+            echo '<strong style="color:red;">' . $e->getMessage() . '</strong><br />';
+            exit('ERRO');
+        }
+        exit('FIM');
     }
 
 }

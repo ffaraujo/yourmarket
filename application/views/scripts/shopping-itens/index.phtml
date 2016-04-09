@@ -3,7 +3,7 @@
 <br class="clear" />
 <?php echo $this->render('partial/breadcrumbs.phtml'); ?>
 <br class="clear" />
-<a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'insert'), 'default', true); ?>" class="button" style="float: right; margin-bottom: 10px;">Adicionar</a>
+<a href="<?php echo $this->url(array('controller' => 'shopping-itens', 'action' => 'insert', 'shopping' => $this->sid), 'default', true); ?>" class="button" style="float: right; margin-bottom: 10px;">Adicionar</a>
 <br class="clear" />
 <table class="back-table">
     <thead>

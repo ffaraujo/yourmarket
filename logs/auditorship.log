@@ -17,3 +17,7 @@
 2016-03-27 13:12:34 DEBUG (7): u:1;a:insert;l:product;o:2;
 2016-03-30 20:57:38 DEBUG (7): u:1;a:delete;l:shopping-itens;o:1---1;
 2016-03-30 20:57:57 DEBUG (7): u:1;a:delete;l:shopping-itens;o:1---2;
+2016-04-08 20:23:22 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-04-08 20:28:34 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-04-08 20:28:58 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-04-08 20:29:23 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;

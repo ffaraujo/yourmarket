@@ -68,6 +68,19 @@ class Application_Model_ShoppingMapper {
             return $id;
         }
     }
+    
+    /**
+     * Save or Update an item in DB
+     * 
+     * @param Array $values An array with data to save
+     * @return Int $id Or NULL if get error
+     */
+    public function saveItem(array $values) {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $result = $db->insert('products_has_shopping', $values);
+
+        return $result;
+    }
 
     /**
      * Get data in DB and converts to object
