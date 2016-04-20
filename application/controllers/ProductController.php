@@ -151,14 +151,14 @@ class ProductController extends GeneralController {
     }
 
     public function populateAction() {
-        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
+        /*if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
             $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
-        }
+        }*/
         try {
             echo '<pre>';
             $productMapper = new Application_Model_ProductMapper();
 
-            $file = PATH_UPLOAD . 'cc-20160312.csv';
+            $file = PATH_UPLOAD . 'cc-20160409.csv';
             echo $file . ' [' . date('d-m-Y H:i:s') . ']<br /><hr /><br />';
             echo '<table>
                 <tr align="center">
@@ -177,6 +177,7 @@ class ProductController extends GeneralController {
             $k = 0;
 
             foreach ($lines as $line) {
+				// @TODO melhorar essa busca, usar o find
                 $row = $productMapper->fetchAll(false, "prd_name LIKE '" . trim($line[0]) . "'");
                 if (empty($row[0])) {
                     if(strstr($line[0], '2016') !== false)

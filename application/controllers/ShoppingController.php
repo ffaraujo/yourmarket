@@ -100,15 +100,17 @@ class ShoppingController extends GeneralController {
     }
 
     public function populateAction() {
-        /* if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
+        /*if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
           $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
-          } */
+        }*/
         try {
             echo '<pre>';
             $shoppingMapper = new Application_Model_ShoppingMapper();
+            $productMapper  = new Application_Model_ProductMapper();
 
-            $file = PATH_UPLOAD . 'cc-20160205.csv';
             $now = date('d-m-Y H:i:s');
+            $file = PATH_UPLOAD . 'cc-20160315.csv';
+			$nowZ = new Zend_Date($now, 'dd-MM-yyyy HH:mm:ss');
             echo $file . ' [' . $now . ']<br /><hr /><br />';
             echo '<table>
                 <tr align="center">
@@ -120,13 +122,13 @@ class ShoppingController extends GeneralController {
                 $buffer = fgets($handle, 8192);
                 $lines[] = explode(';', $buffer);
             }
-            exit(var_dump($lines));
             $db = Zend_Db_Table_Abstract::getDefaultAdapter();
             $db->beginTransaction();
 
             $i = 0;
             $k = 0;
-            $shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yyyy');
+            $shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yy');
+
             array_shift($lines);
             $row = $shoppingMapper->fetchAll(false, "shp_date LIKE '" . $shoppingDate->get('yyyy-MM-dd') . "'");
             if (empty($row[0])) {
@@ -134,7 +136,7 @@ class ShoppingController extends GeneralController {
                 $shopping->setDate($shoppingDate->get('yyyy-MM-dd'));
                 $shopping->setValue(0);
                 $shopping->setUser($this->_logon->getUser()->getId());
-                $shopping->setCreateDate($now);
+                $shopping->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
                 $shopping->setActive(1);
                 $shoppingMapper->save($shopping);
             } else {
@@ -142,27 +144,42 @@ class ShoppingController extends GeneralController {
             }
 
             foreach ($lines as $line) {
-                if (empty($row[0])) {
-                    $row = new Application_Model_Product();
-                    $row->setName(trim($line[0]));
-                    $row->setCreateDate(date('Y-m-d H:i:s'));
-                    $row->setActive(1);
-                    $row->setUser(1);
+				$results = $productMapper->fetchAll(true,"prd_name LIKE '" . trim(substr($line[0],0,5)) . "%'",array("prd_name ASC","prd_id ASC"));
+				if(empty($results)) {
+					$product = new Application_Model_Product();
+					$product->setName(trim($line[0]));
+					$product->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
+					$product->setActive(1);
+					$product->setUser($this->_logon->getUser()->getId());
+					$productMapper->save($product);
+				} else {
+					if(count($results) == 1) {
+						$product = $result;
+					} else {
+						$rank = 0;
+						foreach($results as $result) {
+							if($result->getName() == trim($line[0])) {
+								$product = $result;
+								break;
+							} else {
+								$number = verifyName(trim($line[0]),$result->getName());
+								if ($number > $rank) {
+									$product = $result;
+									$rank = $number;
+								}
+							}
+						}
+					}
+				}
 
-                    if ($i % 2)
-                        $cor = 'navy';
-                    else
-                        $cor = 'blue';
-                    echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
-                    $shoppingMapper->save($row);
-                    unset($row);
-                    $i++;
-                } else {
-                    echo '<tr align="center" style="color: brown; font-weight: bold;">
-                                    <td colspan="3">' . trim($line[0]) . '</td><td>Ja cadastrado</td>
-                                 </tr>';
-                    $k++;
-                }
+				if ($i % 2)
+					$cor = 'navy';
+				else
+					$cor = 'blue';
+				echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
+				$shoppingMapper->save($row);
+				unset($row);
+				$i++;
             }
 
             echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
@@ -180,5 +197,34 @@ class ShoppingController extends GeneralController {
         }
         exit('FIM');
     }
+	
+	private function verifyName($strA, $strB) {
+		if ($strA == $strB) {
+			$n = 100;
+		} else {
+			$n = 0;
+			$lengA = strlen($strA);
+			
+			// TEST FOR 20%
+			$x = round($lengA / 4, 0, PHP_ROUND_HALF_UP);
+			$aTest = substr(trim($strA),0,$x);
+			$bTest = substr(trim($strB),0,$x);
+			if ($aTest == $bTest)
+				$n = 20;
+			// TEST FOR 50%
+			$x = round($lengA / 2, 0, PHP_ROUND_HALF_DOWN);
+			$aTest = substr(trim($strA),0,$x);
+			$bTest = substr(trim($strB),0,$x);
+			if ($aTest == $bTest)
+				$n = 50;
+			// TEST FOR 80%
+			$x = round(($lengA * 8) / 10, 0, PHP_ROUND_HALF_DOWN);
+			$aTest = substr(trim($strA),0,$x);
+			$bTest = substr(trim($strB),0,$x);
+			if ($aTest == $bTest)
+				$n = 80;
+		}
+		return $n;
+	}
 
 }
