@@ -175,7 +175,7 @@ class Application_Model_ProductMapper {
      * @return NULL
      */
     public function delete($id) {
-        if ((!empty($id)) && ($id != 1)) {
+        if (!empty($id)) {
             //$this->deleteImages($id);
             if ($this->realDelMode) {
                 $this->getDbTable()->delete($this->prefix . 'id = ' . $id);
