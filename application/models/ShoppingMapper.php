@@ -292,13 +292,38 @@ class Application_Model_ShoppingMapper {
     public function getNumberOfItens($shId) {
         $db = Zend_Db_Table::getDefaultAdapter();
         $select = $db->select()
-                ->from('products_has_shopping', array('phs_shopping_id', "SUM(phs_quantity) as qtd"))
+                ->from('products_has_shopping', array('phs_shopping_id', "phs_quantity as qtd"))
                 ->where('phs_shopping_id = ?', $shId);
-        $resources = $db->fetchRow($select);
-        if (!empty($resources['qtd']))
-            return $resources['qtd'];
-        else
+        $resources = $db->fetchAll($select);
+        if (!empty($resources)) {
+            $sum = 0;
+            foreach ($resources as $reg) {
+                if($reg['qtd'] < 1)
+                    $sum += 1;
+                else
+                    $sum += $reg['qtd'];
+            }
+            return $sum;
+        } else {
             return 0;
+        }
+    }
+    
+    public function getTotal($shId) {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = $db->select()
+                ->from('products_has_shopping', array('phs_shopping_id', "phs_to_value as total"))
+                ->where('phs_shopping_id = ?', $shId);
+        $resources = $db->fetchAll($select);
+        if (!empty($resources)) {
+            $sum = 0;
+            foreach ($resources as $reg) {
+                $sum += $reg['total'];
+            }
+            return $sum;
+        } else {
+            return 0;
+        }
     }
 
 }

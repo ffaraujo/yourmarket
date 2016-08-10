@@ -100,152 +100,174 @@ class ShoppingController extends GeneralController {
     }
 
     public function populateAction() {
-        /*if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
-          $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
-        }*/
+        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
+            $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
+        }
+        
         try {
             echo '<pre>';
             $shoppingMapper = new Application_Model_ShoppingMapper();
-            $productMapper  = new Application_Model_ProductMapper();
+            $productMapper = new Application_Model_ProductMapper();
 
             $now = date('d-m-Y H:i:s');
-			
-			$files = readDir();
-			foreach($files as $file) {
-				$file = PATH_UPLOAD . $file;
-				//$file = PATH_UPLOAD . 'cc-20160315.csv';
-				$nowZ = new Zend_Date($now, 'dd-MM-yyyy HH:mm:ss');
-				echo $file . ' [' . $now . ']<br /><hr /><br />';
-				echo '<table>
+
+            $files = $this->readDir();
+            $ff = 1;
+            foreach ($files as $file) {
+                if($ff++ > 10) break;
+                set_time_limit(180);
+                $file = PATH_UPLOAD . $file;
+                //$file = PATH_UPLOAD . 'cc-20160315.csv';
+                $nowZ = new Zend_Date($now, 'dd-MM-yyyy HH:mm:ss');
+                echo $file . ' [' . $now . ']<br /><hr /><br />';
+                echo '<table>
 					<tr align="center">
 					<td>NOME;</td><td>QTDE;</td><td>P. UNI;</td><td>P. TOTAL;</td>
 					</tr>';
-				$handle = fopen($file, 'r');
+                $handle = fopen($file, 'r');
 
-				while (!feof($handle)) {
-					$buffer = fgets($handle, 8192);
-					$lines[] = explode(';', $buffer);
-				}
-				$db = Zend_Db_Table_Abstract::getDefaultAdapter();
-				$db->beginTransaction();
+                unset($lines); $lines = array();
+                while (!feof($handle)) {
+                    $buffer = fgets($handle, 8192);
+                    $lines[] = explode(';', $buffer);
+                }
+                
+                $sum = 0.0;
+                $i = 0;
+                $shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yy');
 
-				$i = 0;
-				$k = 0;
-				$shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yy');
+                array_shift($lines);
+                $row = $shoppingMapper->fetchAll(false, "shp_date LIKE '" . $shoppingDate->get('yyyy-MM-dd') . "'");
+                if (empty($row[0])) {
+                    $shopping = new Application_Model_Shopping();
+                    $shopping->setDate($shoppingDate->get('yyyy-MM-dd'));
+                    $shopping->setValue(0);
+                    $shopping->setUser($this->_logon->getUser()->getId());
+                    $shopping->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
+                    $shopping->setActive(1);
+                    $shoppingId = $shoppingMapper->save($shopping);
+                    $shopping->setId($shoppingId);
+                } else {
+                    $shopping = $row[0];
+                    $shoppingId = $shopping->getId();
+                }
 
-				array_shift($lines);
-				$row = $shoppingMapper->fetchAll(false, "shp_date LIKE '" . $shoppingDate->get('yyyy-MM-dd') . "'");
-				if (empty($row[0])) {
-					$shopping = new Application_Model_Shopping();
-					$shopping->setDate($shoppingDate->get('yyyy-MM-dd'));
-					$shopping->setValue(0);
-					$shopping->setUser($this->_logon->getUser()->getId());
-					$shopping->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
-					$shopping->setActive(1);
-					$shoppingMapper->save($shopping);
-				} else {
-					$shopping = $row[0];
-				}
+                foreach ($lines as $line) {
+                    if (empty($line[0]))
+                        continue;
+                    
+                    $results = $productMapper->fetchAll(true, "prd_name LIKE '" . trim(substr($line[0], 0, 5)) . "%'", array("prd_name ASC", "prd_id ASC"));
+                    if (empty($results)) {
+                        $product = new Application_Model_Product();
+                        $product->setName(trim($line[0]));
+                        $product->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
+                        $product->setActive(1);
+                        $product->setUser($this->_logon->getUser()->getId());
+                        $productMapper->save($product);
+                    } else {
+                        if (count($results) == 1) {
+                            $product = $results[0];
+                        } else {
+                            $rank = 0;
+                            foreach ($results as $result) {
+                                if ($result->getName() == trim($line[0])) {
+                                    $product = $result;
+                                    break;
+                                } else {
+                                    $number = $this->verifyName(trim($line[0]), $result->getName());
+                                    if ($number > $rank) {
+                                        $product = $result;
+                                        $rank = $number;
+                                    }
+                                }
+                            }
+                        }
+                    }
 
-				foreach ($lines as $line) {
-					$results = $productMapper->fetchAll(true,"prd_name LIKE '" . trim(substr($line[0],0,5)) . "%'",array("prd_name ASC","prd_id ASC"));
-					if(empty($results)) {
-						$product = new Application_Model_Product();
-						$product->setName(trim($line[0]));
-						$product->setCreateDate($nowZ->get('yyyy-MM-dd HH:mm:ss'));
-						$product->setActive(1);
-						$product->setUser($this->_logon->getUser()->getId());
-						$productMapper->save($product);
-					} else {
-						if(count($results) == 1) {
-							$product = $result;
-						} else {
-							$rank = 0;
-							foreach($results as $result) {
-								if($result->getName() == trim($line[0])) {
-									$product = $result;
-									break;
-								} else {
-									$number = verifyName(trim($line[0]),$result->getName());
-									if ($number > $rank) {
-										$product = $result;
-										$rank = $number;
-									}
-								}
-							}
-						}
-					}
+                    $itemData = array(
+                        'phs_product_id' => $product->getId(),
+                        'phs_shopping_id' => $shoppingId,
+                        'phs_quantity' => str_replace(',', '.', $line[1]),
+                        'phs_un_value' => str_replace(',', '.', $line[2]),
+                        'phs_to_value' => str_replace(',', '.', $line[3]),
+                    );
+                    $shoppingMapper->saveItem($itemData);
+                    $sum += floatval(str_replace(',', '.', $line[3]));
+                    
+                    if ($i % 2)
+                        $cor = 'navy';
+                    else
+                        $cor = 'blue';
+                    echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
 
-					if ($i % 2)
-						$cor = 'navy';
-					else
-						$cor = 'blue';
-					echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
-					$shoppingMapper->save($row);
-					unset($row);
-					$i++;
-				}
+                    unset($itemData);
+                    $i++;
+                }
+                $shopping->setValue($sum);
+                $shoppingMapper->save($shopping);
 
-				echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
-				echo '<tr style="color:red; text-align:center; font-weight:bold;"><td colspan="4">' . $k . ' registros nao-cadastrados!</td></tr>';
-				echo '</table>';
-				$db->commit();
-				fclose($handle);
-				//var_dump($lines);
-			}
+                echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
+                echo '</table>';
+                fclose($handle);
+            }
             echo '</pre>';
             exit('SUCESSO');
         } catch (Exception $e) {
-            $db->rollBack();
-            echo '<strong style="color:red;">' . $e->getMessage() . '</strong><br />';
+            echo '<strong style="color:red;">message:' . $e->getMessage() . '</strong><br />';
+            echo '<p style="color:red;">line:' . $e->getLine() . '</p><br />';
+            echo '<p style="color:red;">code:' . $e->getCode() . '</p><br />';
+            echo '<p style="color:red;">file:' . $e->getFile() . '</p><br />';
+            var_dump($product);
+            var_dump($line);
+            echo '<p style="color:red;">' . $e->getTraceAsString() . '</p><br />';
             exit('ERRO');
         }
         exit('FIM');
     }
-	
-	private function verifyName($strA, $strB) {
-		if ($strA == $strB) {
-			$n = 100;
-		} else {
-			$n = 0;
-			$lengA = strlen($strA);
-			
-			// TEST FOR 20%
-			$x = round($lengA / 4, 0, PHP_ROUND_HALF_UP);
-			$aTest = substr(trim($strA),0,$x);
-			$bTest = substr(trim($strB),0,$x);
-			if ($aTest == $bTest)
-				$n = 20;
-			// TEST FOR 50%
-			$x = round($lengA / 2, 0, PHP_ROUND_HALF_DOWN);
-			$aTest = substr(trim($strA),0,$x);
-			$bTest = substr(trim($strB),0,$x);
-			if ($aTest == $bTest)
-				$n = 50;
-			// TEST FOR 80%
-			$x = round(($lengA * 8) / 10, 0, PHP_ROUND_HALF_DOWN);
-			$aTest = substr(trim($strA),0,$x);
-			$bTest = substr(trim($strB),0,$x);
-			if ($aTest == $bTest)
-				$n = 80;
-		}
-		return $n;
-	}
-	
-	public function readDir() {
-		$dir = PATH_UPLOAD . '';
-		
-		$ponteiro = opendir($dir);
 
-		$itens = array();
+    private function verifyName($strA, $strB) {
+        if ($strA == $strB) {
+            $n = 100;
+        } else {
+            $n = 0;
+            $lengA = strlen($strA);
 
-		while ($nome_itens = readdir($ponteiro)) {
-			if (strpos($nome_itens, '.csv') !== false)
-				$itens[] = $nome_itens;
-		}
-		sort($itens);
-		
-		return $itens;
-	}
+            // TEST FOR 20%
+            $x = round($lengA / 4, 0, PHP_ROUND_HALF_UP);
+            $aTest = substr(trim($strA), 0, $x);
+            $bTest = substr(trim($strB), 0, $x);
+            if ($aTest == $bTest)
+                $n = 20;
+            // TEST FOR 50%
+            $x = round($lengA / 2, 0, PHP_ROUND_HALF_DOWN);
+            $aTest = substr(trim($strA), 0, $x);
+            $bTest = substr(trim($strB), 0, $x);
+            if ($aTest == $bTest)
+                $n = 50;
+            // TEST FOR 80%
+            $x = round(($lengA * 8) / 10, 0, PHP_ROUND_HALF_DOWN);
+            $aTest = substr(trim($strA), 0, $x);
+            $bTest = substr(trim($strB), 0, $x);
+            if ($aTest == $bTest)
+                $n = 80;
+        }
+        return $n;
+    }
+
+    public function readDir() {
+        $dir = PATH_UPLOAD . '';
+
+        $ponteiro = opendir($dir);
+
+        $itens = array();
+
+        while ($nome_itens = readdir($ponteiro)) {
+            if (strpos($nome_itens, '.csv') !== false)
+                $itens[] = $nome_itens;
+        }
+        sort($itens);
+
+        return $itens;
+    }
 
 }

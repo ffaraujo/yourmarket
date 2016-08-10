@@ -151,72 +151,73 @@ class ProductController extends GeneralController {
     }
 
     public function populateAction() {
-        /*if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
+        if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
             $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
-        }*/
+        }
         try {
             echo '<pre>';
             $productMapper = new Application_Model_ProductMapper();
 
-			$files = $this->readDir();
-			
-			foreach($files as $file) {
-				//$file = PATH_UPLOAD . 'cc-20160409.csv';
-				unset($lines); $lines = array();
-				set_time_limit(180);
-				$file = PATH_UPLOAD . $file;
-				echo $file . ' [' . date('d-m-Y H:i:s') . ']<br /><hr /><br />';
-				echo '<table>
+            $files = $this->readDir();
+
+            foreach ($files as $file) {
+                //$file = PATH_UPLOAD . 'cc-20160409.csv';
+                unset($lines);
+                $lines = array();
+                set_time_limit(180);
+                $file = PATH_UPLOAD . $file;
+                echo $file . ' [' . date('d-m-Y H:i:s') . ']<br /><hr /><br />';
+                echo '<table>
 					<tr align="center">
 					<td>NOME;</td><td>QTDE;</td><td>P. UNI;</td><td>P. TOTAL;</td>
 					</tr>';
-				$handle = fopen($file, 'r');
+                $handle = fopen($file, 'r');
 
-				while (!feof($handle)) {
-					$buffer = fgets($handle, 8192);
-					$lines[] = explode(';', $buffer);
-				}
-				$db = Zend_Db_Table_Abstract::getDefaultAdapter();
-				$db->beginTransaction();
+                while (!feof($handle)) {
+                    $buffer = fgets($handle, 8192);
+                    $lines[] = explode(';', $buffer);
+                }
+                $db = Zend_Db_Table_Abstract::getDefaultAdapter();
+                $db->beginTransaction();
 
-				$i = 0;
-				$k = 0;
+                $i = 0;
+                $k = 0;
 
-				foreach ($lines as $line) {
-					// @TODO melhorar essa busca, usar o find
-					$row = $productMapper->fetchAll(false, "prd_name LIKE '" . trim($line[0]) . "'");
-					if (empty($row[0])) {
-						if((strstr($line[0], '2016') !== false) && (strstr($line[0], '/16'))
-							continue;
-						$row = new Application_Model_Product();
-						$row->setName(trim($line[0]));
-						$row->setCreateDate(date('Y-m-d H:i:s'));
-						$row->setActive(1);
-						$row->setUser(1);
+                foreach ($lines as $line) {
+                    // @TODO melhorar essa busca, usar o find
+                    $row = $productMapper->fetchAll(false, "prd_name LIKE '" . trim($line[0]) . "'");
+                    if (empty($row[0])) {
+                        if ((strstr($line[0], '2016') !== false) && (strstr($line[0], '/16')))
+                            continue;
+                        $row = new Application_Model_Product();
+                        $row->setName(trim($line[0]));
+                        $row->setCreateDate(date('Y-m-d H:i:s'));
+                        $row->setActive(1);
+                        $row->setUser(1);
 
-						if ($i % 2)
-							$cor = 'navy';
-						else
-							$cor = 'blue';
-						echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
-						$productMapper->save($row);
-						unset($row);
-						$i++;
-					} else {
-						echo '<tr align="center" style="color: brown; font-weight: bold;">
+                        if ($i % 2)
+                            $cor = 'navy';
+                        else
+                            $cor = 'blue';
+                        echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
+                        $productMapper->save($row);
+                        unset($row);
+                        $i++;
+                    } else {
+                        echo '<tr align="center" style="color: brown; font-weight: bold;">
 										<td colspan="3">' . trim($line[0]) . '</td><td>Ja cadastrado</td>
 									 </tr>';
-						$k++;
-					}
-				}
+                        $k++;
+                    }
+                }
 
-				echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
-				echo '<tr style="color:red; text-align:center; font-weight:bold;"><td colspan="4">' . $k . ' registros nao-cadastrados!</td></tr>';
-				echo '</table>';
-				$db->commit();
-				fclose($handle);
-				//var_dump($lines);
-			}
+                echo '<tr style="color:green; text-align:center; font-weight:bold;"><td colspan="4">' . $i . ' registros cadastrados!</td></tr>';
+                echo '<tr style="color:red; text-align:center; font-weight:bold;"><td colspan="4">' . $k . ' registros nao-cadastrados!</td></tr>';
+                echo '</table>';
+                $db->commit();
+                fclose($handle);
+                //var_dump($lines);
+            }
             echo '</pre>';
             exit('SUCESSO');
         } catch (Exception $e) {
@@ -226,20 +227,21 @@ class ProductController extends GeneralController {
         }
         exit('FIM');
     }
-	
-	public function readDir() {
-		$dir = PATH_UPLOAD . '';
-		
-		$ponteiro = opendir($dir);
 
-		$itens = array();
+    public function readDir() {
+        $dir = PATH_UPLOAD . '';
 
-		while ($nome_itens = readdir($ponteiro)) {
-			if (strpos($nome_itens, '.csv') !== false)
-				$itens[] = $nome_itens;
-		}
-		sort($itens);
-		
-		return $itens;
-	}
+        $ponteiro = opendir($dir);
+
+        $itens = array();
+
+        while ($nome_itens = readdir($ponteiro)) {
+            if (strpos($nome_itens, '.csv') !== false)
+                $itens[] = $nome_itens;
+        }
+        sort($itens);
+
+        return $itens;
+    }
+
 }

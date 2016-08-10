@@ -60,6 +60,7 @@ class ShoppingItensController extends GeneralController {
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
+                /* @TODO se nao houver valor total, calcular automaticamente */
                 $values = $form->getValues();
                 $values['phs_shopping_id'] = $this->_getParam('shopping');
 
