@@ -68,7 +68,7 @@ class Application_Model_ShoppingMapper {
             return $id;
         }
     }
-    
+
     /**
      * Save or Update an item in DB
      * 
@@ -298,7 +298,7 @@ class Application_Model_ShoppingMapper {
         if (!empty($resources)) {
             $sum = 0;
             foreach ($resources as $reg) {
-                if($reg['qtd'] < 1)
+                if (($reg['qtd'] < 1) || (substr($reg['qtd'], strpos($reg['qtd'], '.'), 3) != '000'))
                     $sum += 1;
                 else
                     $sum += $reg['qtd'];
@@ -308,7 +308,7 @@ class Application_Model_ShoppingMapper {
             return 0;
         }
     }
-    
+
     public function getTotal($shId) {
         $db = Zend_Db_Table::getDefaultAdapter();
         $select = $db->select()

@@ -94,11 +94,12 @@ class Login {
     }
 
     public function refreshExpirationTime() {
-        return false;
+        //return false;
         $sysMapper = new Application_Model_SystemMapper();
         $exp_config = $sysMapper->findConfig('expiration-time');
         $auth_session = new Zend_Session_Namespace('Zend_Auth_Restricted');
         $auth_session->setExpirationSeconds($exp_config->getValue()); //default value: 1h, 3600 secs
+        return true;
     }
 
     public function checksSuperUser() {

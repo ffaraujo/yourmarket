@@ -103,7 +103,7 @@ class ShoppingController extends GeneralController {
         if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'P')) {
             $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
         }
-        
+
         try {
             echo '<pre>';
             $shoppingMapper = new Application_Model_ShoppingMapper();
@@ -112,9 +112,13 @@ class ShoppingController extends GeneralController {
             $now = date('d-m-Y H:i:s');
 
             $files = $this->readDir();
-            $ff = 1;
+            $ff = 1; $debug = false; $word = 'FEIJA';  $fDebug = 'C:\wamp\www\yourmarket\public/upload/cc-20160309.csv'; //29FF
             foreach ($files as $file) {
-                if($ff++ > 10) break;
+                if ($ff++ > 50)
+                    break;
+                if (($file != 'cc-20160309.csv') && $debug) //29FF
+                    continue;
+                
                 set_time_limit(180);
                 $file = PATH_UPLOAD . $file;
                 //$file = PATH_UPLOAD . 'cc-20160315.csv';
@@ -126,12 +130,13 @@ class ShoppingController extends GeneralController {
 					</tr>';
                 $handle = fopen($file, 'r');
 
-                unset($lines); $lines = array();
+                unset($lines);
+                $lines = array();
                 while (!feof($handle)) {
                     $buffer = fgets($handle, 8192);
                     $lines[] = explode(';', $buffer);
                 }
-                
+
                 $sum = 0.0;
                 $i = 0;
                 $shoppingDate = new Zend_Date($lines[0][0], 'dd/MM/yy');
@@ -155,8 +160,8 @@ class ShoppingController extends GeneralController {
                 foreach ($lines as $line) {
                     if (empty($line[0]))
                         continue;
-                    
-                    $results = $productMapper->fetchAll(true, "prd_name LIKE '" . trim(substr($line[0], 0, 5)) . "%'", array("prd_name ASC", "prd_id ASC"));
+
+                    $results = $productMapper->fetchAll(true, "prd_name LIKE '" . substr(trim($line[0]), 0, 5) . "%'", array("prd_name ASC", "prd_id ASC"));
                     if (empty($results)) {
                         $product = new Application_Model_Product();
                         $product->setName(trim($line[0]));
@@ -164,22 +169,37 @@ class ShoppingController extends GeneralController {
                         $product->setActive(1);
                         $product->setUser($this->_logon->getUser()->getId());
                         $productMapper->save($product);
+                        $rank = 100;
                     } else {
                         if (count($results) == 1) {
                             $product = $results[0];
+                            $rank = $this->verifyName(trim($line[0]), $product->getName());
                         } else {
                             $rank = 0;
                             foreach ($results as $result) {
                                 if ($result->getName() == trim($line[0])) {
+                                    $rank = 100;
                                     $product = $result;
                                     break;
                                 } else {
                                     $number = $this->verifyName(trim($line[0]), $result->getName());
+                                    if ((substr(trim($line[0]), 0, 5) == $word) && $debug && ($file == $fDebug)) { //29FF
+                                        echo 'trim line: ' . trim($line[0]).', result get name: '.$result->getName()."\n";
+                                        echo 'number: ' . $number . ' - rank: ' . $rank . "\n";
+                                    }
                                     if ($number > $rank) {
                                         $product = $result;
                                         $rank = $number;
                                     }
                                 }
+                            }
+                            if (substr(trim($line[0]), 0, 5) == $word && $debug && ($file == $fDebug)) { //29FF
+                                echo '$line:';
+                                var_dump($line);
+                                echo '$product:';
+                                var_dump($product);
+                                echo '$results:';
+                                var_dump($results);
                             }
                         }
                     }
@@ -191,14 +211,22 @@ class ShoppingController extends GeneralController {
                         'phs_un_value' => str_replace(',', '.', $line[2]),
                         'phs_to_value' => str_replace(',', '.', $line[3]),
                     );
+                    
+                    if (substr(trim($line[0]), 0, 5) == $word && $debug && ($file == $fDebug)) { //29FF
+                        echo '$itemData:';
+                        var_dump($itemData);
+                    }
+
                     $shoppingMapper->saveItem($itemData);
                     $sum += floatval(str_replace(',', '.', $line[3]));
-                    
+
                     if ($i % 2)
                         $cor = 'navy';
                     else
                         $cor = 'blue';
-                    echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>Criado!</td></tr>';
+                    if($rank < 60)
+                        $cor = 'goldenrod';
+                    echo '<tr style="color:' . $cor . '; text-align:center; font-weight:bold;"><td colspan="3">' . trim($line[0]) . ';</td><td>(' . $rank . '%)</td><td>'.$product->getName().'</td></tr>';
 
                     unset($itemData);
                     $i++;
@@ -217,8 +245,14 @@ class ShoppingController extends GeneralController {
             echo '<p style="color:red;">line:' . $e->getLine() . '</p><br />';
             echo '<p style="color:red;">code:' . $e->getCode() . '</p><br />';
             echo '<p style="color:red;">file:' . $e->getFile() . '</p><br />';
+            echo '$product: ';
             var_dump($product);
+            echo '$itemData: ';
+            var_dump($itemData);
+            echo '$line: ';
             var_dump($line);
+            echo '$lines: ';
+            var_dump($lines);
             echo '<p style="color:red;">' . $e->getTraceAsString() . '</p><br />';
             exit('ERRO');
         }
@@ -232,24 +266,12 @@ class ShoppingController extends GeneralController {
             $n = 0;
             $lengA = strlen($strA);
 
-            // TEST FOR 20%
-            $x = round($lengA / 4, 0, PHP_ROUND_HALF_UP);
-            $aTest = substr(trim($strA), 0, $x);
-            $bTest = substr(trim($strB), 0, $x);
-            if ($aTest == $bTest)
-                $n = 20;
-            // TEST FOR 50%
-            $x = round($lengA / 2, 0, PHP_ROUND_HALF_DOWN);
-            $aTest = substr(trim($strA), 0, $x);
-            $bTest = substr(trim($strB), 0, $x);
-            if ($aTest == $bTest)
-                $n = 50;
-            // TEST FOR 80%
-            $x = round(($lengA * 8) / 10, 0, PHP_ROUND_HALF_DOWN);
-            $aTest = substr(trim($strA), 0, $x);
-            $bTest = substr(trim($strB), 0, $x);
-            if ($aTest == $bTest)
-                $n = 80;
+            for ($i = 0; $i < $lengA; $i++) {
+                if (substr($strA, $i, 1) == substr($strB, $i, 1))
+                    $n = round((($i + 1) / $lengA) * 100, 0, PHP_ROUND_HALF_UP);
+                else
+                    break;
+            }
         }
         return $n;
     }
@@ -269,5 +291,35 @@ class ShoppingController extends GeneralController {
 
         return $itens;
     }
+    
+    private function defineListOrder() {
+        switch ($this->_getParam('order')) {
+            case 'id':
+                $order = Application_Model_Shopping::PREFIX . 'id ';
+                break;
+            case 'value':
+                $order = Application_Model_Shopping::PREFIX . 'value ';
+                break;
+            case 'date':
+            default:
+                $order = Application_Model_Shopping::PREFIX . 'date ';
+                break;
+        }
+        if ($this->_hasParam('d')) {
+            switch ($this->_getParam('d')) {
+                case 'desc':
+                    $order .= 'DESC';
+                    break;
+                case 'asc':
+                default:
+                    $order .= 'ASC';
+                    break;
+            }
+        } else {
+            $order .= 'ASC';
+        }
+        return $order;
+    }
+
 
 }

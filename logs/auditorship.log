@@ -76,3 +76,6 @@
 2016-08-10 08:22:34 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
 2016-08-10 13:18:03 DEBUG (7): u:1;a:insert;l:product;o:384;
 2016-08-10 13:24:56 DEBUG (7): u:1;a:insert;l:product;o:385;
+2016-08-11 10:20:15 DEBUG (7): u:1;a:insert;l:product;o:389;
+2016-08-11 12:45:45 DEBUG (7): u:1;a:insert;l:product;o:393;
+2016-08-11 12:49:44 DEBUG (7): u:1;a:insert;l:product;o:394;
