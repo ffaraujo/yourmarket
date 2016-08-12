@@ -84,7 +84,7 @@ class Application_Form_ShoppingItem extends Zend_Form {
         
         $total = new Zend_Form_Element_Text($this->pre . 'to_value');
         $total->addFilters(array('StripTags', 'StringTrim'))
-                ->addValidator('NotEmpty')
+                //->addValidator('NotEmpty')
                 ->addValidator('StringLength', false, array(0, 7))
                 ->setDecorators($this->elementDecorators)
                 ->setAttribs(array(
@@ -93,7 +93,7 @@ class Application_Form_ShoppingItem extends Zend_Form {
                     'maxlength' => '7',
                 ))
                 ->setLabel('Valor Total:')
-                ->setRequired(true);
+                ->setRequired(false);
 
         $submit = new Zend_Form_Element_Submit('OK');
         $submit->setDecorators($this->elementDecorators)

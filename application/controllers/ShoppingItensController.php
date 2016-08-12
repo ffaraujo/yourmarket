@@ -29,7 +29,7 @@ class ShoppingItensController extends GeneralController {
         if (!$this->_access->isAllowed($this->getRequest()->getControllerName(), 'R')) {
             $this->addFlashMessage(array('Permissão Negada.', ERROR), '/');
         }
-        if(!$this->_hasParam('shopping')) {
+        if (!$this->_hasParam('shopping')) {
             $this->addFlashMessage(array('Informe uma feira.', ERROR), $this->_iniUrl);
         }
 
@@ -50,7 +50,7 @@ class ShoppingItensController extends GeneralController {
                 $this->addFlashMessage(array('Permissão Negada.', ERROR), $this->_iniUrl);
             }
         }
-        if(!$this->_hasParam('shopping')) {
+        if (!$this->_hasParam('shopping')) {
             $this->addFlashMessage(array('Informe uma feira.', ERROR), $this->_iniUrl);
         }
 
@@ -60,11 +60,16 @@ class ShoppingItensController extends GeneralController {
 
         if ($request->isPost()) {
             if ($form->isValid($request->getPost())) {
-                /* @TODO se nao houver valor total, calcular automaticamente */
                 $values = $form->getValues();
                 $values['phs_shopping_id'] = $this->_getParam('shopping');
+                if (empty($values['phs_to_value'])) {
+                    $values['phs_to_value'] = number_format(round($values['phs_quantity'] * $values['phs_un_value'], 2, PHP_ROUND_HALF_UP), 2, '.', ',');
+                }
 
                 $result_id = $mapper->saveItem($values);
+                $shopping = $mapper->find($values['phs_shopping_id']);
+                $shopping->setValue($shopping->getValue() + $values['phs_to_value']);
+                $mapper->save($shopping);
 
                 $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $result_id);
                 $this->addFlashMessage(array('Dados cadastrados com sucesso.', SUCCESS), $this->_iniUrl);
@@ -87,5 +92,5 @@ class ShoppingItensController extends GeneralController {
         $this->_auditor->saveLog($this->_logon->getUser()->getId(), $this->getRequest()->getActionName(), $this->getRequest()->getControllerName(), $this->_getParam('shopping') . '---' . $this->_getParam('product'));
         $this->addFlashMessage(array('Registro excluído com sucesso.', SUCCESS), $this->_iniUrl);
     }
-    
+
 }

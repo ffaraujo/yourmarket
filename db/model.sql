@@ -234,6 +234,7 @@ INSERT INTO `yourmarketdb`.`acl_resources` (`res_id`, `res_desc`, `res_active`) 
 INSERT INTO `yourmarketdb`.`acl_resources` (`res_id`, `res_desc`, `res_active`) VALUES (5, 'product', 1);
 INSERT INTO `yourmarketdb`.`acl_resources` (`res_id`, `res_desc`, `res_active`) VALUES (6, 'shopping', 1);
 INSERT INTO `yourmarketdb`.`acl_resources` (`res_id`, `res_desc`, `res_active`) VALUES (7, 'shopping-itens', 1);
+INSERT INTO `yourmarketdb`.`acl_resources` (`res_id`, `res_desc`, `res_active`) VALUES (8, 'report', 1);
 
 COMMIT;
 
@@ -295,6 +296,8 @@ INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privil
 INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privilege`, `acc_allow`) VALUES (7, 1, 'D', 1);
 INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privilege`, `acc_allow`) VALUES (7, 2, 'A', 1);
 INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privilege`, `acc_allow`) VALUES (7, 2, 'R', 1);
+INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privilege`, `acc_allow`) VALUES (8, 1, 'R', 1);
+INSERT INTO `yourmarketdb`.`acl_access` (`acc_resource`, `acc_role`, `acc_privilege`, `acc_allow`) VALUES (8, 2, 'R', 1);
 
 COMMIT;
 

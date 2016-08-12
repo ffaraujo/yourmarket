@@ -33,7 +33,7 @@ form.form-back button {width: 155px;}
 form.form-back textarea {width: 415px; display: block;}
 form.form-back input[type=file] {width: 330px;}
 form.form-back .hint {color: #AAA; font: 10px Verdana; display: block; margin-top: -10px;}
-
+.form-container {border: 1px solid gray; width: 30%; float: left; padding-left: 12px;}
 
 /* ---- BUTTONS ---- */
 .button {background-color: #ccc; display: inline-block; min-width: 80px; text-align: center; border: 1px outset black; color: black; font-weight: bold;}
@@ -84,6 +84,8 @@ table.back-table tbody td {
     border: 1px solid gray;
     vertical-align: middle;
 }
+table tr.subheader {background-color: #FFFFCC;}
+table tr.subheader td {font-weight: bold; color: navy;}
 
 /* ---- MENUS ---- */
 ul.menu {
@@ -137,3 +139,4 @@ p.log {font: 12px "Courier New";}
 .right {text-align: right;}
 .order-link {color: black;}
 a.sutil {color: #AAA; font: 10px Verdana;}
+.space4 {margin-left: 4px;}

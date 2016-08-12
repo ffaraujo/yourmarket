@@ -1,0 +1,48 @@
+<h2 class="title">Relatório (Acompanhamento de Preço)</h2>
+<br class="clear" />
+<?php echo $this->render('partial/breadcrumbs.phtml'); ?>
+<br class="clear" />
+<table class="back-table">
+    <thead>
+        <tr>
+            <td>Data</td>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <td><?php echo $this->statsData['name'][$i]; ?></td>
+            <?php endfor; ?>            
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="subheader">
+            <td>MEDIO</td>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <td><?php echo (empty($this->statsData['avg'][$i])) ? '-' : $this->statsData['avg'][$i]; ?></td>
+            <?php endfor; ?>
+        </tr>
+        <tr class="subheader">
+            <td>MIN</td>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <td><?php echo ($this->statsData['min'][$i] == 99999) ? '-' : $this->DisplayNumber($this->statsData['min'][$i]); ?></td>
+            <?php endfor; ?>
+        </tr>
+        <tr class="subheader">
+            <td>MAX</td>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <td><?php echo (empty($this->statsData['max'][$i])) ? '-' : $this->DisplayNumber($this->statsData['max'][$i]); ?></td>
+            <?php endfor; ?>
+        </tr>
+        <tr class="subheader">
+            <td>MODA</td>
+            <?php for ($i = 1; $i <= 5; $i++): ?>
+                <td><?php echo (empty($this->statsData['mod'][$i])) ? '-' : $this->statsData['mod'][$i]; ?></td>
+            <?php endfor; ?>
+        </tr>
+        <?php foreach ($this->tableData as $date => $data): ?>
+            <tr>
+                <td><?php echo $date; ?></td>
+                <?php for ($i = 1; $i <= 5; $i++): ?>
+                    <td><?php echo (isset($data[$i])) ? $data[$i] : "-"; ?></td>
+                <?php endfor; ?>
+            </tr>
+        <?php endforeach; ?>
+    </tbody>
+</table>

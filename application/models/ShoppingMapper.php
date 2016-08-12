@@ -182,6 +182,37 @@ class Application_Model_ShoppingMapper {
     }
 
     /**
+     * Get data in DB and converts to a set of objects
+     * 
+     * @param Int $prId product Id to search
+     * @param String|Array $order define order to get data
+     * @param String $where define where clause to get data
+     * @return Array
+     */
+    public function fetchItemsById($prId, $minDate, $maxDate, $order) {
+        $db = Zend_Db_Table::getDefaultAdapter();
+        $select = $db->select()
+                ->from('products_has_shopping')
+                ->join('shopping', $this->prefix . 'id = phs_shopping_id', $this->prefix . 'date')
+                ->join('products', 'prd_id = phs_product_id', 'prd_name')
+                ->where('phs_product_id = ?', $prId);
+
+        if (!empty($minDate) && !empty($maxDate)) {
+            $select->where($this->prefix . 'date >= ?', $minDate)
+                    ->where($this->prefix . 'date <= ?', $maxDate);
+        }
+
+        if ($order) {
+            $select->order($order);
+        } else {
+            $select->order($this->prefix . 'date ASC');
+        }
+        $resultSet = $db->fetchAll($select);
+
+        return $resultSet;
+    }
+
+    /**
      * Get data in DB and converts to a set of objects with pagination
      * 
      * @param Int $itemPerPage define how many items by page

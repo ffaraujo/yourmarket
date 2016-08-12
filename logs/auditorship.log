@@ -79,3 +79,11 @@
 2016-08-11 10:20:15 DEBUG (7): u:1;a:insert;l:product;o:389;
 2016-08-11 12:45:45 DEBUG (7): u:1;a:insert;l:product;o:393;
 2016-08-11 12:49:44 DEBUG (7): u:1;a:insert;l:product;o:394;
+2016-08-12 07:54:19 DEBUG (7): u:1;a:insert;l:product;o:386;
+2016-08-12 08:35:51 DEBUG (7): u:1;a:insert;l:shopping;o:35;
+2016-08-12 08:54:34 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-08-12 08:55:07 DEBUG (7): u:1;a:insert;l:shopping;o:35;
+2016-08-12 08:55:31 DEBUG (7): u:1;a:delete;l:shopping-itens;o:35---166;
+2016-08-12 08:55:53 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-08-12 08:56:18 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-08-12 13:09:20 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
