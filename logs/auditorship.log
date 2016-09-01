@@ -87,3 +87,5 @@
 2016-08-12 08:55:53 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
 2016-08-12 08:56:18 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
 2016-08-12 13:09:20 DEBUG (7): u:1;a:insert;l:shopping-itens;o:1;
+2016-08-15 11:49:47 DEBUG (7): u:1;a:delete;l:product;o:397;
+2016-08-15 11:50:08 DEBUG (7): u:1;a:delete;l:product;o:395;

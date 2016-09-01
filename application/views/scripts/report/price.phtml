@@ -1,4 +1,4 @@
-<h2 class="title">Relatório (Acompanhamento de Preço)</h2>
+<h2 class="title"><span>Relatório (Acomp. de Preço)</span></h2>
 <br class="clear" />
 <?php echo $this->render('partial/breadcrumbs.phtml'); ?>
 <br class="clear" />
@@ -38,7 +38,7 @@
         </tr>
         <?php foreach ($this->tableData as $date => $data): ?>
             <tr>
-                <td><?php echo $date; ?></td>
+                <td><?php echo $this->DisplayDate($date, 'yyyy-MM-dd', 'form'); ?></td>
                 <?php for ($i = 1; $i <= 5; $i++): ?>
                     <td><?php echo (isset($data[$i])) ? $data[$i] : "-"; ?></td>
                 <?php endfor; ?>

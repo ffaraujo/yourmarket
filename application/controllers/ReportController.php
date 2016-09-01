@@ -26,6 +26,7 @@ class ReportController extends GeneralController {
         $formReportPrice = new Application_Form_ReportPrice();
         $formReportPrice->setAction($request->getBaseUrl() . '/report/price');
 
+        // @TODO put datepicker in the right forms
         $this->view->formPrice = $formReportPrice;
     }
 
@@ -42,6 +43,7 @@ class ReportController extends GeneralController {
                 $data = $form->getValues();
                 // @TODO implementar calculo da moda
                 $tableData = array();
+                $valueData = array();
                 $statsData = array(
                     'avg' => array(1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0),
                     'min' => array(1 => 99999, 2 => 99999, 3 => 99999, 4 => 99999, 5 => 99999),
@@ -61,13 +63,21 @@ class ReportController extends GeneralController {
                                 $statsData['max'][$i] = $item['phs_to_value'];
                             $d1 += $item['phs_to_value'];
                             $d2++;
-                            $tableData[$this->setFormDate($item['shp_date'])][$i] = number_format($item['phs_to_value'], 2, ',', '.');
+                            $tableData[$item['shp_date']][$i] = number_format($item['phs_to_value'], 2, ',', '.');
                             $statsData['name'][$i] = $item['prd_name'];
+                            $value = number_format($item['phs_to_value'], 2, ',', '.');
+                            if (isset($valueData[$i][$value])) {
+                                $valueData[$i][$value] += 1;
+                            } else {
+                                $valueData[$i][$value] = 1;
+                            }
                         }
+                        arsort($valueData[$i]);
+                        $statsData['mod'][$i] = key($valueData[$i]);
                         $statsData['avg'][$i] = number_format(round($d1 / $d2, 2, PHP_ROUND_HALF_UP), 2, ',', '.');
                     }
                 }
-                // @TODO ordenar o array de dados
+                ksort($tableData);
                 $this->view->tableData = $tableData;
                 $this->view->statsData = $statsData;
             }

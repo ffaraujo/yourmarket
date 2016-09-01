@@ -9,7 +9,7 @@
         $this->headLink()->headLink(array('rel' => 'icon', 'href' => $this->baseUrl() . '/favicon.ico', 'type' => 'image/x-icon'), 'PREPEND');
         $this->headLink()->headLink(array('rel' => 'shortcut icon', 'href' => $this->baseUrl() . '/favicon.ico', 'type' => 'image/x-icon'), 'PREPEND');
 
-        $this->headScript()->prependFile($this->baseUrl().'/scripts/jquery/jquery-1.11.1.min.js');
+        $this->headScript()->prependFile($this->baseUrl() . '/scripts/jquery/jquery-1.11.1.min.js');
 
         $this->headLink()->appendStylesheet($this->baseUrl() . '/css/reset.css');
         $this->headLink()->appendStylesheet($this->baseUrl() . '/css/text.css');

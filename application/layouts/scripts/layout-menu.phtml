@@ -21,7 +21,7 @@
         echo $this->headScript();
         echo $this->headStyle();
         echo $this->headLink();
-        
+
         if ($this->logged)
             $access = new Access($this->user);
         else
@@ -43,23 +43,36 @@
             </div>
         </div>
         <br class="clear" />
-        <?php echo $this->render('partial/breadcrumbs.phtml'); ?>
-        <br class="clear" />
         <div class="box content container_12">
-            <div class="grid_3">
-                <ul class="menu">
-                    <?php if ($this->logged && !empty($access)): ?>
-                        <?php if ($access->isAllowed('users', 'R')): ?>
-                            <li class="menu-title">Usuários</li>
-                            <li><span class="menu-item"><a href="<?php echo $this->url(array('controller' => 'users'), 'default', true); ?>">Listar</a></span></li>
-                            <li><span class="menu-item"><a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'insert'), 'default', true); ?>">Cadastrar</a></span></li>
+            <div class="grid_3" style="position: relative;">
+                &nbsp;
+                <aside class="sidebar">
+                    <div class="wrapper">
+                        <?php if ($this->logged && !empty($access)): ?>
+                            <?php if ($access->isAllowed('users', 'R')): ?>
+                                <div class="side-menu">
+                                    <h3 class="menu-title"><span>Usuários</span></h3>
+                                    <nav role="navigation">
+                                        <ul>
+                                            <li><a href="<?php echo $this->url(array('controller' => 'users'), 'default', true); ?>">Listar</a></li>
+                                            <li><a href="<?php echo $this->url(array('controller' => 'users', 'action' => 'insert'), 'default', true); ?>">Cadastrar</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($access->isAllowed('system', 'U')): ?>
+                                <div class="side-menu">
+                                    <h3 class="menu-title"><span>Configurações</span></h3>
+                                    <nav role="navigation">
+                                        <ul>
+                                            <li><a href="<?php echo $this->url(array('controller' => 'system'), 'default', true); ?>">Listar</a></li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            <?php endif; ?>
                         <?php endif; ?>
-                        <?php if ($access->isAllowed('system', 'U')): ?>
-                            <li class="menu-title">Configurações</li>
-                            <li><span class="menu-item"><a href="<?php echo $this->url(array('controller' => 'system'), 'default', true); ?>">Listar</a></span></li>
-                        <?php endif; ?>
-                    <?php endif; ?>
-                </ul>
+                    </div>
+                </aside>
             </div>
             <div class="grid_9">
                 <?php echo $this->layout()->content; ?>

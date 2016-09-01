@@ -112,11 +112,11 @@ class ShoppingController extends GeneralController {
             $now = date('d-m-Y H:i:s');
 
             $files = $this->readDir();
-            $ff = 1; $debug = false; $word = 'FEIJA';  $fDebug = 'C:\wamp\www\yourmarket\public/upload/cc-20160309.csv'; //29FF
+            $ff = 1; $debug = false; $word = 'MISTU';  $fDebug = 'C:\wamp\www\yourmarket\public/upload/cc-20160715.csv'; //29FF
             foreach ($files as $file) {
                 if ($ff++ > 50)
                     break;
-                if (($file != 'cc-20160309.csv') && $debug) //29FF
+                if (($file != 'cc-20160715.csv') && $debug) //29FF
                     continue;
                 
                 set_time_limit(180);
